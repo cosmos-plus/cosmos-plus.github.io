@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+  <META HTTP-EQUIV="Expires" CONTENT="-1">
+  <meta http-equiv="Cache-Control" content="no-store" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.4.0/color-thief.min.js"></script> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title id="pageTitle">FUSE Content Player</title>
+  <style>
+    /* Add your existing CSS here */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #121212;
+      color: #e0e0e0;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      overflow-x: scroll;
+      overflow-y: hidden;
+      transition: all 0.2s;
+    }
+    h1 {
+      color: #fff;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    label, input, select, button {
+      background-color: #16161640;
+      border: 0px solid #444; 
+      color: #e0e0e0;
+      border-radius: 5px;
+      display: inline-block;
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+    }
+    input:focus, select:focus, button:focus {
+      outline: none;
+      border-color: #418a54;
+    }
+    button {
+      background-color: #418a54;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #357345;
+    }
+
+    #prevPoster, #nextPoster {
+      height: 45px;
+      align-items: center;
+      width: 75px;
+    }
+    .navigation {
+      width: 200px;
+      align-items: center;
+      justify-content: center;
+    }
+    #poster-container {
+      display: block;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    iframe {
+      width: 80%;
+      height: 60%;
+      border: none;
+      border-radius: 6px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -40%;
+      padding-bottom: 140px;
+      box-shadow: 10px 10px 34px 0px rgba(0,0,0,0.34);
+    }
+    .movie-info {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #16161640;
+      text-shadow: 2px 2px 7px rgba(0,0,0,0.21);
+      padding-right: 20px;
+      padding-left: 20px;
+      border-radius: 5px;
+      width: 78%;
+      top: 120px;
+    }
+    #poster-container img {
+      max-width: 200px;
+      margin-right: 20px;
+      border-radius: 5px;
+    }
+    .movie-details {
+      display: flex;
+      align-items: center;
+      z-index: 31;
+    }
+    .poster {
+      margin: 10px;
+      border: 1px solid #444;
+      padding: 10px;
+      background-color: #292929;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .poster img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+    .hidden {
+      display: none;
+    }
+    .top-container {
+      position: absolute;
+      display: inline;
+      padding-top: 20px;
+      top: 0px;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 40%;
+      height: 150px;
+    }
+    #tvOptions {
+      display: inline;
+      right: 0px;
+    }
+    .container-background {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: -20px;
+      left: 0px;
+      background-size: cover;
+      z-index: 0;
+      filter: blur(50px);
+      
+    }
+    .page-title {
+      font-weight: bold;
+      padding-left: 20px;
+      padding-right: 20px;
+      font-size: 30px;
+    }
+  </style>
+</head>
+<body id="pagebody">
+  <div class="container-background" id="backgroundContainer"></div>
+  <div class="top-container" id="top-container">
+    <a class="page-title"><i class="fa fa-plug" id="fuseplug"></i> FUSE</a>
+    <input style="width: 300px;" type="text" id="imdbId" placeholder="Enter IMDb ID or Link" autocomplete="off">
+    <select style="width: 100px;" id="type" autocomplete="off">
+      <option value="movie">Movie</option>
+      <option value="tv">TV Show</option>
+    </select>
+    <div id="tvOptions" style="display: none;">
+      <input style="width: 100px;" type="number" id="season" placeholder="Season #" min="1" autocomplete="off">
+      <input style="width: 100px;" type="number" id="episode" placeholder="Episode #" min="1" autocomplete="off">
+    </div>
+    <button style="width: 100px;" id="streamButton">Stream</button>
+  </div>
+  
+
+  <iframe id="vidlinkIframe" style="display: none;" frameborder="0" allowfullscreen></iframe>
+  <div class="movie-info" id="movieInfo" style="display: none;">
+    <h2 id="movieTitle"></h2>
+    <div class="movie-details">
+      <div id="poster-container">
+        <img id="currentPoster" alt="Poster">
+        <div class="navigation">
+          <button id="prevPoster" disabled>&lt;</button>
+          <button id="nextPoster" disabled>&gt;</button>
+        </div>
+      </div>
+      <div>
+        <p><strong>Description:</strong> <span id="moviePlot"></span></p>
+        <p><strong>IMDb Rating:</strong> <span id="movieRating"></span></p>
+        <p><strong>Actors:</strong> <span id="movieActors"></span></p>
+        <p><strong>Director:</strong> <span id="movieDirector"></span></p>
+        <p><strong>Release Date:</strong> <span id="movieReleaseDate"></span></p>
+        <p><strong>Genre:</strong> <span id="movieGenre"></span></p>
+        <p><strong>IMDb ID:</strong> <span id="movieImdbId" style="cursor: pointer;" onclick="copyToClipboard()"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tmdbApiKey = 'b1ed546b8593a1ce49d8d457009e9362'; // Replace with your TMDb API key
+    const omdbApiKey = '320f7bb6'; // Replace with your OMDb API key
+
+    let currentPosterIndex = 0;
+    let posters = [];
+    let backgrounds = []; // Store backdrops
+
+    document.getElementById('type').addEventListener('change', function() {
+      const type = this.value;
+      const tvOptions = document.getElementById('tvOptions');
+      tvOptions.style.display = type === 'tv' ? 'block' : 'none';
+      document.querySelector('.navigation').style.display = type === 'tv' ? 'none' : 'flex';
+    });
+
+    document.getElementById('streamButton').addEventListener('click', async function() {
+      let imdbId = document.getElementById('imdbId').value.trim();
+      const type = document.getElementById('type').value;
+      const season = document.getElementById('season').value;
+      const episode = document.getElementById('episode').value;
+
+      const imdbUrlPattern = /(?:https?:\/\/)?(?:www\.)?imdb\.com\/title\/(tt\d+).*/;
+      const match = imdbId.match(imdbUrlPattern);
+      if (match) {
+        imdbId = match[1];
+      }
+
+      if (!imdbId) {
+        alert('Please enter a valid IMDb ID or link.');
+        return;
+      }
+
+      try {
+        const omdbResponse = await fetch(`https://www.omdbapi.com/?i=${imdbId}&apikey=${omdbApiKey}`);
+        const omdbData = await omdbResponse.json();
+
+        if (omdbData.Response === "False") {
+          alert('Movie/TV Show not found in OMDb.');
+          return;
+        }
+
+        document.getElementById('movieTitle').textContent = omdbData.Title;
+        document.getElementById('pageTitle').textContent = `FUSE | ${omdbData.Title}`;
+        document.getElementById('moviePlot').textContent = omdbData.Plot;
+        document.getElementById('movieRating').textContent = omdbData.imdbRating;
+        document.getElementById('movieActors').textContent = omdbData.Actors;
+        document.getElementById('movieDirector').textContent = omdbData.Director;
+        document.getElementById('movieReleaseDate').textContent = omdbData.Released;
+        document.getElementById('movieGenre').textContent = omdbData.Genre;
+        document.getElementById('movieImdbId').textContent = imdbId;
+        document.getElementById('movieInfo').style.display = 'block';
+
+        const tmdbResponse = await fetch(`https://api.themoviedb.org/3/find/${imdbId}?external_source=imdb_id&api_key=${tmdbApiKey}`);
+        const tmdbData = await tmdbResponse.json();
+        let tmdbId = '';
+
+        if (type === 'movie' && tmdbData.movie_results.length > 0) {
+          tmdbId = tmdbData.movie_results[0].id;
+        } else if (type === 'tv' && tmdbData.tv_results.length > 0) {
+          tmdbId = tmdbData.tv_results[0].id;
+        } else {
+          alert('Could not find TMDb data for this title.');
+          return;
+        }
+
+        // Fetch images (posters and backdrops)
+        const imagesResponse = await fetch(`https://api.themoviedb.org/3/${type}/${tmdbId}/images?api_key=${tmdbApiKey}`);
+        const imagesData = await imagesResponse.json();
+
+        posters = imagesData.posters.filter(poster => poster.iso_639_1 === 'en');
+        backgrounds = imagesData.backdrops; // Fetch backgrounds
+
+        if (posters.length > 0) {
+          document.getElementById('currentPoster').src = `https://image.tmdb.org/t/p/w780${posters[0].file_path}`;
+          currentPosterIndex = 0;
+          updatePosterNavigation();
+        } else {
+          document.getElementById('currentPoster').src = ''; // If no posters found
+        }
+
+        if (backgrounds.length > 0) {
+          const bgImageUrl = `https://image.tmdb.org/t/p/w1280${backgrounds[0].file_path}`;
+          document.getElementById('backgroundContainer').style.backgroundImage = `url(${bgImageUrl})`;
+
+          const backgroundImage = new Image();
+          backgroundImage.src = bgImageUrl;
+          backgroundImage.crossOrigin = 'Anonymous'; // Ensure cross-origin issues are handled
+
+          backgroundImage.onload = function() {
+    try {
+        const colorThief = new ColorThief();
+        const dominantColors = colorThief.getPalette(backgroundImage, 2);
+
+        if (dominantColors && dominantColors.length > 0) {
+            const primaryColor = dominantColors[0];
+            const secondaryColor = dominantColors[1];
+
+            // Function to calculate perceived brightness
+            const getBrightness = (color) => {
+                return 0.299 * color[0] + 0.587 * color[1] + 0.114 * color[2];
+            };
+
+            const primaryBrightness = getBrightness(primaryColor);
+            const secondaryBrightness = getBrightness(secondaryColor);
+
+            // Determine brighter and darker colors
+            const brighterColor = primaryBrightness > secondaryBrightness ? primaryColor : secondaryColor;
+            const darkerColor = primaryBrightness < secondaryBrightness ? primaryColor : secondaryColor;
+
+            document.getElementById('top-container').style.background = `linear-gradient(180deg, rgb(${darkerColor.join(',')}, 0.75) 0%, rgba(0,212,255,0) 100%)`;
+            document.getElementById('streamButton').style.backgroundColor = `rgb(${darkerColor.join(',')})`; // Set to the darker color
+            document.getElementById('movieImdbId').style.color = `rgb(${brighterColor.join(',')})`; // Set to the brighter color
+            document.getElementById('prevPoster').style.backgroundColor = `rgb(${darkerColor.join(',')})`;
+            document.getElementById('nextPoster').style.backgroundColor = `rgb(${darkerColor.join(',')})`;
+            document.getElementById('fuseplug').style.color = `rgb(${brighterColor.join(',')})`;
+            document.getElementById('pagebody').style.overflowY = `scroll`;
+            document.getElementById('top-container').style.top = `0px`;
+            document.getElementById('top-container').style.left = `0px`;
+            document.getElementById('top-container').style.width = `100%`;
+            document.getElementById('top-container').style.height = `150px`;
+            document.getElementById('top-container').style.transform = `none`;
+            document.getElementById('vidlinkIframe').style.display = `block`;
+
+        } else {
+            console.error('No dominant colors found');
+        }
+    } catch (error) {
+        console.error('Error getting dominant colors:', error);
+    }
+};
+
+
+        } else {
+          document.getElementById('backgroundContainer').style.backgroundImage = 'none'; // If no backgrounds found
+        }
+        // Stream video
+        const server = 'https://player.videasy.net/'; // Replace with your own server
+        const videoUrl = type === 'movie' ? `${server}movie/${tmdbId}` : `${server}tv/${tmdbId}/${season}/${episode}`;
+        document.getElementById('vidlinkIframe').src = videoUrl;
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        alert('An error occurred while fetching movie/TV show details.');
+      }
+    });
+
+    document.getElementById('prevPoster').addEventListener('click', function() {
+      if (currentPosterIndex > 0) {
+        currentPosterIndex--;
+        document.getElementById('currentPoster').src = `https://image.tmdb.org/t/p/w780${posters[currentPosterIndex].file_path}`;
+        updatePosterNavigation();
+      }
+    });
+
+    document.getElementById('nextPoster').addEventListener('click', function() {
+      if (currentPosterIndex < posters.length - 1) {
+        currentPosterIndex++;
+        document.getElementById('currentPoster').src = `https://image.tmdb.org/t/p/w780${posters[currentPosterIndex].file_path}`;
+        updatePosterNavigation();
+      }
+    });
+
+    function updatePosterNavigation() {
+      document.getElementById('prevPoster').disabled = currentPosterIndex === 0;
+      document.getElementById('nextPoster').disabled = currentPosterIndex === posters.length - 1;
+    }
+
+    function copyToClipboard() {
+      const imdbIdText = document.getElementById('movieImdbId').textContent;
+      navigator.clipboard.writeText(imdbIdText)
+        .then(() => {
+          alert('IMDb ID copied to clipboard!');
+        })
+        .catch(err => {
+          console.error('Failed to copy IMDb ID:', err);
+        });
+    }
+
+    function detectBrowser() {
+    let userAgent = navigator.userAgent;
+    let browserName = "Unknown Browser";
+    let recommendations = "";
+
+    if (userAgent.indexOf("Chrome") > -1) {
+        browserName = "Chrome";
+        recommendations = "Check out these extensions:\n" +
+            "- uBlock Origin: https://chromewebstore.google.com/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm?pli=1\n" +
+            "- Privacy Badger: https://chromewebstore.google.com/detail/privacy-badger/pkehgijcmpdhfbdbbnkijodmdjhbjlgp";
+    } else if (userAgent.indexOf("Firefox") > -1) {
+        browserName = "Firefox";
+        recommendations = "Check out these extensions:\n" +
+            "- uBlock Origin: https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/\n" +
+            "- Privacy Badger: https://addons.mozilla.org/en-US/firefox/addon/privacy-badger17/";
+    } else if (userAgent.indexOf("Edge") > -1) {
+        browserName = "Edge";
+        recommendations = "Check out these extensions:\n" +
+            "- uBlock Origin: https://microsoftedge.microsoft.com/addons/detail/ublock-origin/odfafepnkmbhccpbejgmiehpchacaeak\n" +
+            "- Privacy Badger: https://microsoftedge.microsoft.com/addons/detail/privacy-badger/mkejgcgkdlddbggjhhflekkondicpnop";
+    } else if (userAgent.indexOf("Safari") > -1) {
+        browserName = "Safari";
+        recommendations = "Unfortunately, specific extension recommendations are not available for Safari in this alert.";
+    } else if (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1) {
+        browserName = "Internet Explorer";
+        recommendations = "Unfortunately, specific extension recommendations are not available for Internet Explorer in this alert.";
+    }
+
+    alert("You are using: " + browserName + "\n" + recommendations);
+}
+window.onload = function() {
+            document.getElementById('imdbId').value = '';
+            document.getElementById('type').value = 'movie';
+       };
+  </script>
+</body>
+</html>
