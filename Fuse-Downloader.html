@@ -2,95 +2,104 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Welch's Fuse Downloader</title>
+<title>Fuse Downloader</title>
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #0f1115;
-        color: #e6e6e6;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0f1115;
+    color: #e6e6e6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-    h1 {
-        margin: 20px 0 5px;
-        font-weight: 500;
-    }
+h1 { margin: 20px 0 5px; }
 
-    #titleDisplay {
-        margin-bottom: 15px;
-        color: #b8bcc6;
-    }
+#titleDisplay {
+    margin-bottom: 15px;
+    color: #b8bcc6;
+}
 
-    .container {
-        width: 90%;
-        max-width: 900px;
-    }
+.container {
+    width: 90%;
+    max-width: 900px;
+}
 
-    .input-group {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
 
-    input {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 6px;
-        background: #1a1d24;
-        color: white;
-        outline: none;
-    }
+input {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: #1a1d24;
+    color: white;
+}
 
-    button {
-        padding: 10px 16px;
-        border: none;
-        border-radius: 6px;
-        background: #2a2f3a;
-        color: white;
-        cursor: pointer;
-    }
+button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    background: #2a2f3a;
+    color: white;
+    cursor: pointer;
+}
 
-    button:hover {
-        background: #3a4050;
-    }
+button:hover { background: #3a4050; }
 
-    button:disabled {
-        background: #1a1d24;
-        color: #666;
-        cursor: not-allowed;
-    }
+button:disabled {
+    background: #1a1d24;
+    color: #666;
+    cursor: not-allowed;
+}
 
-    .controls {
-        display: none;
-        gap: 10px;
-        margin-bottom: 15px;
-        align-items: center;
-    }
+.controls {
+    display: none;
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
+}
 
-    select {
-        padding: 8px;
-        background: #1a1d24;
-        color: white;
-        border: none;
-        border-radius: 6px;
-    }
+select {
+    padding: 8px;
+    background: #1a1d24;
+    color: white;
+    border: none;
+    border-radius: 6px;
+}
 
-    iframe {
-        width: 100%;
-        height: 500px;
-        border: none;
-        border-radius: 10px;
-        background: black;
-    }
+iframe {
+    width: 100%;
+    height: 500px;
+    border: none;
+    border-radius: 10px;
+    background: black;
+    margin-bottom: 15px;
+}
+
+.m3u8-box {
+    display: none;
+    position: absolute;
+    left: 10px;
+    top: 80px;
+    gap: 10px;
+    align-items: center;
+}
+
+label {
+    font-size: 14px;
+    color: #aaa;
+}
 </style>
 </head>
 <body>
 
-<h1>Welch's Fuse Downloader</h1>
+<h1>Fuse Downloader</h1>
 <div id="titleDisplay"></div>
 
 <div class="container">
@@ -108,211 +117,271 @@
 
     <iframe id="player"></iframe>
 
+    <div class="m3u8-box" id="m3u8Box">
+        <label>Paste M3U8 link here:</label>
+        <input id="m3u8Input" placeholder="https://...m3u8">
+        <button onclick="copyFFmpeg()">Copy FFmpeg</button>
+    </div>
+
 </div>
 
 <script>
 const TMDB_API_KEY = "b1ed546b8593a1ce49d8d457009e9362";
+const BASE_PATH = "/home/luna/cosmos/tv-shows";
 
 let isTV = false;
+let currentTMDB = null;
+let currentTitle = "";
 let seasonsData = [];
+let currentSeason = 1;
+let currentEpisode = 1;
+
+/* ---------- Helpers ---------- */
+
+function pad(n) { return String(n).padStart(2, "0"); }
+
+function dirify(input) {
+    return input
+        // 1. & → and
+        .replace(/&/g, "and")
+
+        // 2. / → -
+        .replace(/\//g, "-")
+
+        // 3. remove =
+        .replace(/=/g, "")
+
+        // 4. transliterate accents (approx iconv)
+        .normalize("NFKD")
+        .replace(/[\u0300-\u036f]/g, "")
+
+        // 5. lowercase
+        .toLowerCase()
+
+        // 6. remove punctuation ?:*,!'`.
+        .replace(/[?:*,!'.]/g, "")
+
+        // 7. spaces → dashes
+        .replace(/\s+/g, "-")
+
+        // 8. remove non [a-z0-9-]
+        .replace(/[^a-z0-9-]/g, "")
+
+        // 9. collapse multiple dashes
+        .replace(/-+/g, "-")
+
+        // 10. trim leading/trailing dashes
+        .replace(/^-+|-+$/g, "");
+}
+
+/* ---------- FFmpeg ---------- */
+function copyFFmpeg() {
+    const inputEl = document.getElementById("m3u8Input");
+    const buttonEl = document.getElementById("copyBtn"); // make sure your button has this id
+
+    const link = inputEl.value.trim();
+    if (!link) return;
+
+    const season = String(currentSeason).padStart(2, "0");
+    const episode = String(currentEpisode).padStart(2, "0");
+
+    const filepath =
+        `/home/luna/cosmos/tv-shows/${dirify(currentTitle)}/season-${currentSeason}/content/s${season}e${episode}.mp4`;
+
+    const session = `ffmpeg_${Math.floor(Math.random() * 100000)}`;
+
+    const cmd =
+`SESSION="${session}"; \
+tmux new-session -d -s "$SESSION" bash -lc \
+'ffmpeg -user_agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" \
+-i "${link}" -c copy -bsf:a aac_adtstoasc "${filepath}"; tmux kill-session -t "$SESSION"'`;
+
+    navigator.clipboard.writeText(cmd).then(() => {
+        inputEl.value = "";
+
+        // visual feedback
+        const originalText = buttonEl.textContent;
+        const originalBg = buttonEl.style.backgroundColor;
+
+        buttonEl.textContent = "Copied";
+        buttonEl.style.backgroundColor = "#22c55e"; // green
+
+        setTimeout(() => {
+            buttonEl.textContent = originalText;
+            buttonEl.style.backgroundColor = originalBg;
+        }, 1200);
+    }).catch(() => {
+        // silent fail (or you could handle UI error instead of alert)
+    });
+}
+/* ---------- Core ---------- */
 
 function extractId(input) {
-    input = input.trim();
+    const imdb = input.match(/tt\d+/);
+    if (imdb) return { type: "imdb", id: imdb[0] };
 
-    const imdbMatch = input.match(/tt\d+/);
-    if (imdbMatch) return { type: "imdb", id: imdbMatch[0] };
-
-    const tmdbMatch = input.match(/\d+/);
-    if (tmdbMatch) return { type: "tmdb", id: tmdbMatch[0] };
+    const tmdb = input.match(/\d+/);
+    if (tmdb) return { type: "tmdb", id: tmdb[0] };
 
     return null;
 }
 
-async function convertIMDbToTMDB(imdbId) {
-    const res = await fetch(`https://api.themoviedb.org/3/find/${imdbId}?api_key=${TMDB_API_KEY}&external_source=imdb_id`);
-    const data = await res.json();
+async function convertIMDbToTMDB(id) {
+    const res = await fetch(`https://api.themoviedb.org/3/find/${id}?api_key=${TMDB_API_KEY}&external_source=imdb_id`);
+    const d = await res.json();
 
-    if (data.movie_results.length)
-        return { id: data.movie_results[0].id, type: "movie" };
-
-    if (data.tv_results.length)
-        return { id: data.tv_results[0].id, type: "tv" };
+    if (d.movie_results.length) return { id: d.movie_results[0].id, type: "movie" };
+    if (d.tv_results.length) return { id: d.tv_results[0].id, type: "tv" };
 
     throw "Not found";
 }
 
-async function detectType(tmdbId) {
-    if ((await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`)).ok)
-        return "movie";
-
-    if ((await fetch(`https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_API_KEY}`)).ok)
-        return "tv";
-
-    throw "Invalid TMDB ID";
+async function detectType(id) {
+    if ((await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=${TMDB_API_KEY}`)).ok) return "movie";
+    if ((await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${TMDB_API_KEY}`)).ok) return "tv";
+    throw "Invalid";
 }
 
-function loadPlayer(id, season = 1, episode = 1) {
+function loadPlayer() {
     const iframe = document.getElementById("player");
 
     if (isTV) {
-        iframe.src = `https://vidup.to/tv/${id}/${season}/${episode}`;
+        iframe.src = `https://vidup.to/tv/${currentTMDB}/${currentSeason}/${currentEpisode}`;
     } else {
-        iframe.src = `https://vidup.to/movie/${id}`;
+        iframe.src = `https://vidup.to/movie/${currentTMDB}`;
     }
 }
 
-async function setTitle(tmdbId, type) {
-    let url = `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${TMDB_API_KEY}`;
-    const res = await fetch(url);
-    const data = await res.json();
+/* ---------- Title ---------- */
 
-    const title = data.title || data.name;
-    document.getElementById("titleDisplay").textContent = title || "";
+async function setTitle(id, type) {
+    const res = await fetch(`https://api.themoviedb.org/3/${type}/${id}?api_key=${TMDB_API_KEY}`);
+    const d = await res.json();
+
+    currentTitle = d.title || d.name || "";
+    document.getElementById("titleDisplay").textContent = currentTitle;
 }
 
-async function setupTV(tmdbId) {
-    const res = await fetch(`https://api.themoviedb.org/3/tv/${tmdbId}?api_key=${TMDB_API_KEY}`);
-    const data = await res.json();
+/* ---------- TV Logic ---------- */
 
-    seasonsData = data.seasons.filter(s => s.season_number !== 0);
+async function setupTV(id) {
+    const res = await fetch(`https://api.themoviedb.org/3/tv/${id}?api_key=${TMDB_API_KEY}`);
+    const d = await res.json();
+
+    seasonsData = d.seasons.filter(s => s.season_number !== 0);
 
     const seasonSelect = document.getElementById("seasonSelect");
     seasonSelect.innerHTML = "";
 
-    seasonsData.forEach(season => {
-        const opt = document.createElement("option");
-        opt.value = season.season_number;
-        opt.textContent = `Season ${season.season_number}`;
-        seasonSelect.appendChild(opt);
+    seasonsData.forEach(s => {
+        let o = document.createElement("option");
+        o.value = s.season_number;
+        o.textContent = `Season ${s.season_number}`;
+        seasonSelect.appendChild(o);
     });
 
     seasonSelect.onchange = async () => {
-        await populateEpisodes(tmdbId, seasonSelect.value);
+        currentSeason = parseInt(seasonSelect.value);
+        currentEpisode = 1;
+        await populateEpisodes();
     };
 
     document.getElementById("tvControls").style.display = "flex";
+    document.getElementById("m3u8Box").style.display = "flex";
 
-    await populateEpisodes(tmdbId, seasonsData[0].season_number);
+    currentSeason = seasonsData[0].season_number;
+    await populateEpisodes();
 }
 
-async function populateEpisodes(tmdbId, seasonNum) {
-    const res = await fetch(`https://api.themoviedb.org/3/tv/${tmdbId}/season/${seasonNum}?api_key=${TMDB_API_KEY}`);
-    const data = await res.json();
+async function populateEpisodes() {
+    const res = await fetch(`https://api.themoviedb.org/3/tv/${currentTMDB}/season/${currentSeason}?api_key=${TMDB_API_KEY}`);
+    const d = await res.json();
 
     const episodeSelect = document.getElementById("episodeSelect");
     episodeSelect.innerHTML = "";
 
-    data.episodes.forEach(ep => {
-        const opt = document.createElement("option");
-        opt.value = ep.episode_number;
-        opt.textContent = `Episode ${ep.episode_number}`;
-        episodeSelect.appendChild(opt);
+    d.episodes.forEach(ep => {
+        let o = document.createElement("option");
+        o.value = ep.episode_number;
+        o.textContent = `Episode ${ep.episode_number}`;
+        episodeSelect.appendChild(o);
     });
 
+    episodeSelect.value = currentEpisode;
+
     episodeSelect.onchange = () => {
-        loadPlayer(tmdbId, seasonNum, episodeSelect.value);
+        currentEpisode = parseInt(episodeSelect.value);
+        loadPlayer();
         updateNextButton();
     };
 
-    loadPlayer(tmdbId, seasonNum, 1);
+    loadPlayer();
     updateNextButton();
 }
 
+/* ---------- Next Episode ---------- */
+
 function updateNextButton() {
-    const seasonSelect = document.getElementById("seasonSelect");
-    const episodeSelect = document.getElementById("episodeSelect");
     const nextBtn = document.getElementById("nextBtn");
 
-    const currentSeason = parseInt(seasonSelect.value);
-    const currentEpisode = parseInt(episodeSelect.value);
+    const seasonIndex = seasonsData.findIndex(s => s.season_number === currentSeason);
+    const seasonData = seasonsData[seasonIndex];
 
-    const seasonIndex = seasonsData.findIndex(s => s.season_number == currentSeason);
-    const currentSeasonData = seasonsData[seasonIndex];
-
-    const hasNextEpisode = currentEpisode < currentSeasonData.episode_count;
+    const hasNextEpisode = currentEpisode < seasonData.episode_count;
     const hasNextSeason = seasonIndex < seasonsData.length - 1;
 
     nextBtn.disabled = !(hasNextEpisode || hasNextSeason);
 }
 
 document.getElementById("nextBtn").onclick = async () => {
-    const seasonSelect = document.getElementById("seasonSelect");
-    const episodeSelect = document.getElementById("episodeSelect");
+    const seasonIndex = seasonsData.findIndex(s => s.season_number === currentSeason);
+    const seasonData = seasonsData[seasonIndex];
 
-    let season = parseInt(seasonSelect.value);
-    let episode = parseInt(episodeSelect.value);
+    if (currentEpisode < seasonData.episode_count) {
+        currentEpisode++;
+    } else if (seasonIndex < seasonsData.length - 1) {
+        currentSeason = seasonsData[seasonIndex + 1].season_number;
+        currentEpisode = 1;
 
-    const seasonIndex = seasonsData.findIndex(s => s.season_number == season);
-    const currentSeasonData = seasonsData[seasonIndex];
-
-    if (episode < currentSeasonData.episode_count) {
-        episode++;
-    } else {
-        season++;
-        episode = 1;
-        seasonSelect.value = season;
-        await populateEpisodesFromJump(season);
-    }
-
-    episodeSelect.value = episode;
-    loadPlayer(currentTMDB, season, episode);
-    updateNextButton();
-};
-
-async function populateEpisodesFromJump(seasonNum) {
-    const tmdbId = currentTMDB;
-    const res = await fetch(`https://api.themoviedb.org/3/tv/${tmdbId}/season/${seasonNum}?api_key=${TMDB_API_KEY}`);
-    const data = await res.json();
-
-    const episodeSelect = document.getElementById("episodeSelect");
-    episodeSelect.innerHTML = "";
-
-    data.episodes.forEach(ep => {
-        const opt = document.createElement("option");
-        opt.value = ep.episode_number;
-        opt.textContent = `Episode ${ep.episode_number}`;
-        episodeSelect.appendChild(opt);
-    });
-}
-
-let currentTMDB = null;
-
-async function handleInput() {
-    const input = document.getElementById("input").value;
-    const extracted = extractId(input);
-
-    if (!extracted) {
-        alert("Invalid input");
+        document.getElementById("seasonSelect").value = currentSeason;
+        await populateEpisodes();
         return;
     }
 
-    try {
-        let tmdbId, type;
+    document.getElementById("episodeSelect").value = currentEpisode;
+    loadPlayer();
+    updateNextButton();
+};
 
-        if (extracted.type === "imdb") {
-            const result = await convertIMDbToTMDB(extracted.id);
-            tmdbId = result.id;
-            type = result.type;
-        } else {
-            tmdbId = extracted.id;
-            type = await detectType(tmdbId);
-        }
+/* ---------- Entry ---------- */
 
-        currentTMDB = tmdbId;
-        isTV = type === "tv";
+async function handleInput() {
+    const raw = document.getElementById("input").value;
+    const ex = extractId(raw);
+    if (!ex) return alert("Invalid input");
 
-        await setTitle(tmdbId, type);
+    let id, type;
 
-        if (isTV) {
-            await setupTV(tmdbId);
-        } else {
-            document.getElementById("tvControls").style.display = "none";
-            loadPlayer(tmdbId);
-        }
+    if (ex.type === "imdb") {
+        const r = await convertIMDbToTMDB(ex.id);
+        id = r.id;
+        type = r.type;
+    } else {
+        id = ex.id;
+        type = await detectType(id);
+    }
 
-    } catch (err) {
-        console.error(err);
-        alert("Failed to load content");
+    currentTMDB = id;
+    isTV = type === "tv";
+
+    await setTitle(id, type);
+
+    if (isTV) {
+        await setupTV(id);
+    } else {
+        document.getElementById("tvControls").style.display = "none";
+        document.getElementById("m3u8Box").style.display = "none";
+        loadPlayer();
     }
 }
 </script>
