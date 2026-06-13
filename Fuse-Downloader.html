@@ -246,9 +246,9 @@ function loadPlayer() {
     const iframe = document.getElementById("player");
 
     if (isTV) {
-        iframe.src = `https://vidup.to/tv/${currentTMDB}/${currentSeason}/${currentEpisode}`;
+        iframe.src = `https://vidcore.net/tv/${currentTMDB}/${currentSeason}/${currentEpisode}?server=mars`;
     } else {
-        iframe.src = `https://vidup.to/movie/${currentTMDB}`;
+        iframe.src = `https://vidcore.net/movie/${currentTMDB}?server=mars`;
     }
 }
 
