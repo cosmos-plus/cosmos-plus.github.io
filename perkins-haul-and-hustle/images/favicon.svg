@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="1040 250 300 300" width="64" height="64">
+  <style>
+    path { fill: none; stroke: #fff; stroke-width: 17; stroke-linecap: round; stroke-linejoin: round; }
+    @media (prefers-color-scheme: light) { path { stroke: #000; } }
+  </style>
+  <!-- cab -->
+  <path d="M1070 504 V303 Q1070 292 1082 292 H1136 Q1147 292 1153 301 L1194 362 Q1199 371 1210 373 L1295 391 Q1311 394 1311 410 V452 H1319 V500 Q1319 511 1306 511 H1264"/>
+  <!-- front wheel arch -->
+  <path d="M1090 511 A86 86 0 0 1 1262 511"/>
+</svg>

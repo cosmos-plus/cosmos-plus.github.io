@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perkins Haul and Hustle | Junk Removal &amp; Hauling in Jacksonville, FL</title>
+  <meta name="description" content="Perkins Haul and Hustle helps Jacksonville, Florida homeowners clear out clutter and remove unwanted furniture, appliances, and household items. Anytime. Anywhere. Schedule a pickup today.">
+  <meta name="theme-color" content="#080B10">
+  <meta name="color-scheme" content="dark">
+  <!-- Flag JS before first paint so JS-dependent initial states (navbar logo, reveals) never flash. -->
+  <script>document.documentElement.classList.add("js");</script>
+  <!-- TODO: replace with a real favicon (e.g. images/favicon.png). Empty icon avoids a 404 until then. -->
+  <link rel="icon" href="data:,">
+
+  <!-- Open Graph / social sharing -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Perkins Haul and Hustle">
+  <meta property="og:title" content="Perkins Haul and Hustle | Jacksonville Junk Removal &amp; Hauling">
+  <meta property="og:description" content="We haul. You hustle. Jacksonville junk removal and hauling. Less clutter. More space.">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,700;1,800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HomeAndConstructionBusiness",
+    "name": "Perkins Haul and Hustle",
+    "slogan": "Anytime. Anywhere.",
+    "description": "Junk removal and hauling for Jacksonville, Florida homeowners and residents.",
+    "areaServed": { "@type": "City", "name": "Jacksonville, Florida" }
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============ NAVIGATION ============ -->
+  <header class="site-header" id="top">
+    <div class="container nav-inner">
+      <a class="logo brand-logo" href="#home" aria-label="Perkins Haul and Hustle, home">
+        <img src="images/main-logo.svg" alt="" width="1536" height="1024">
+      </a>
+
+      <nav class="nav" id="site-nav" aria-label="Main">
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a class="btn btn-primary nav-cta" href="#schedule" data-schedule>Schedule Service</a>
+      </nav>
+
+      <button class="nav-toggle" type="button" aria-controls="site-nav" aria-expanded="false">
+        <span class="sr-only">Open menu</span>
+        <span class="nav-toggle-bars" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <canvas class="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero-shade" aria-hidden="true"></div>
+
+      <div class="container hero-content">
+        <!-- The logo is the hero's centerpiece and the page's h1. -->
+        <div class="hero-stage">
+          <span class="hero-beam" aria-hidden="true"></span>
+          <h1 class="hero-logo" id="hero-title">
+            <span class="brand-logo">
+              <img src="images/main-logo.svg" alt="Perkins Haul and Hustle" width="1536" height="1024" fetchpriority="high">
+            </span>
+          </h1>
+        </div>
+        <p class="slogan">Anytime. Anywhere.</p>
+        <p class="hero-title"><span>We haul,</span> <span class="line-accent">and hustle.</span></p>
+        <p class="hero-text">Jacksonville junk removal and hauling to help you clear the clutter and reclaim your space. Got unwanted furniture, household items, or clutter taking up space? Let's get it moving.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="#schedule" data-schedule>
+            Schedule a Pickup
+            <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-lg" href="#services">Explore Services</a>
+        </div>
+        <p class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Jacksonville, Florida · Junk Removal &amp; Hauling</p>
+      </div>
+    </section>
+
+    <!-- Service ticker -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker-track">
+        <span>Household Junk</span><span>Furniture</span><span>Appliances</span><span>Garage Cleanouts</span><span>Home Cleanouts</span><span>General Hauling</span>
+        <span>Household Junk</span><span>Furniture</span><span>Appliances</span><span>Garage Cleanouts</span><span>Home Cleanouts</span><span>General Hauling</span>
+      </div>
+    </div>
+
+    <!-- ============ SERVICES ============
+         To edit services: add, remove, or change <li class="service"> items below.
+         The "Type of service" dropdown in the scheduling form is built automatically
+         from each item's data-service attribute. -->
+    <section class="section" id="services" aria-labelledby="services-title">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="kicker">01 / Services</p>
+          <h2 class="section-title" id="services-title">Unwanted items out.<br>Your space back.</h2>
+          <p class="section-lede">We focus on one thing: helping you get unwanted stuff out of your home. Here's what we can help with.</p>
+        </div>
+
+        <ul class="service-grid">
+          <li class="service reveal" data-service="Household Junk Removal">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></svg>
+            <h3>Household Junk Removal</h3>
+            <p>Get rid of unwanted household items that are taking up valuable space.</p>
+          </li>
+          <li class="service reveal" data-service="Furniture Removal">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 11V8a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v3"/><path d="M2.5 13a2 2 0 0 1 4 0v2h11v-2a2 2 0 0 1 4 0v4a1 1 0 0 1-1 1h-17a1 1 0 0 1-1-1z"/><path d="M5 18v2M19 18v2"/></svg>
+            <h3>Furniture Removal</h3>
+            <p>Clear out old couches, tables, chairs, and other unwanted furniture.</p>
+          </li>
+          <li class="service reveal" data-service="Appliance Removal">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="1.5"/><path d="M6 9h12M9 4.5v2M9 11.5v3"/></svg>
+            <h3>Appliance Removal</h3>
+            <p>Help removing unwanted household appliances, subject to our accepted-item policy.</p>
+          </li>
+          <li class="service reveal" data-service="Garage Cleanout">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21V9l9-6 9 6v12"/><path d="M7 21v-9h10v9M7 15h10M7 18h10"/></svg>
+            <h3>Garage Cleanouts</h3>
+            <p>Reclaim cluttered garage space by clearing out items you no longer need.</p>
+          </li>
+          <li class="service reveal" data-service="Home Cleanout">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7"/><path d="M5 9.5V20h14V9.5"/><path d="M9 15h7M13.5 12.5 16 15l-2.5 2.5"/></svg>
+            <h3>Home Cleanouts</h3>
+            <p>Help clearing out accumulated household clutter and unwanted belongings.</p>
+          </li>
+          <li class="service reveal" data-service="General Hauling">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 5h12v11H2zM14 9h4.5l3.5 3.5V16h-8"/><circle cx="6" cy="17.5" r="2"/><circle cx="18" cy="17.5" r="2"/></svg>
+            <h3>General Hauling</h3>
+            <p>Get help moving unwanted items out of your home and off your property.</p>
+          </li>
+        </ul>
+
+        <p class="fine-print reveal">Not sure if we can take something? Just describe it in your request. Some items, including hazardous materials, may not be accepted.</p>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT: JACKSONVILLE LOCAL FOCUS ============ -->
+    <section class="section local" id="about" aria-labelledby="local-title">
+      <div class="container local-grid">
+        <div class="local-copy reveal">
+          <p class="kicker">02 / Local</p>
+          <h2 class="section-title" id="local-title">Jacksonville, let's clear some space.</h2>
+          <p class="section-lede">From unwanted furniture to clutter that's been sitting around for too long, Perkins Haul and Hustle helps Jacksonville residents take back their space. Tell us what needs to go, and let's figure out the next step.</p>
+          <dl class="local-facts">
+            <div>
+              <dt>Based in</dt>
+              <dd data-config="serviceArea">Jacksonville, Florida</dd>
+            </div>
+            <div>
+              <dt>Focused on</dt>
+              <dd>Clearing unwanted items from local homes</dd>
+            </div>
+          </dl>
+          <a class="btn btn-primary" href="#schedule" data-schedule>Schedule a Pickup</a>
+        </div>
+
+        <!-- Abstract route / map-line motif (decorative, not a real map) -->
+        <div class="local-map reveal" aria-hidden="true">
+          <svg viewBox="0 0 520 460" class="map-svg">
+            <defs>
+              <linearGradient id="routeGrad" x1="0" x2="1" y1="1" y2="0">
+                <stop offset="0" stop-color="#2EC5FF" stop-opacity="0"/>
+                <stop offset=".35" stop-color="#2EC5FF"/>
+                <stop offset="1" stop-color="#7DE3FF"/>
+              </linearGradient>
+              <radialGradient id="pinGlow">
+                <stop offset="0" stop-color="#2EC5FF" stop-opacity=".55"/>
+                <stop offset="1" stop-color="#2EC5FF" stop-opacity="0"/>
+              </radialGradient>
+            </defs>
+            <g class="map-grid">
+              <path d="M0 80h520M0 160h520M0 240h520M0 320h520M0 400h520M80 0v460M160 0v460M240 0v460M320 0v460M400 0v460M480 0v460"/>
+            </g>
+            <g class="map-roads">
+              <path d="M-10 380 C 120 330 180 300 260 230 S 420 120 530 90"/>
+              <path d="M40 -10 C 90 120 150 200 170 300 S 210 420 230 470"/>
+              <path d="M-10 170 C 120 190 240 180 330 230 S 470 330 530 340"/>
+              <path d="M300 -10 C 320 80 360 150 440 200 S 520 260 530 250"/>
+            </g>
+            <path class="map-river" d="M210 -10 C 250 60 230 120 280 170 S 330 260 300 320 S 340 420 400 470"/>
+            <path class="map-route" d="M60 400 C 120 360 150 330 190 300 S 250 250 262 228"/>
+            <circle class="pin-glow" cx="262" cy="228" r="48" fill="url(#pinGlow)"/>
+            <circle class="pin-ring" cx="262" cy="228" r="14"/>
+            <circle class="pin-dot" cx="262" cy="228" r="5"/>
+            <circle class="route-start" cx="60" cy="400" r="4"/>
+            <text class="map-label" x="282" y="214">JAX</text>
+            <text class="map-coords" x="282" y="248">30.33° N · 81.66° W</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ WHY CHOOSE US ============ -->
+    <section class="section why" id="why" aria-labelledby="why-title">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="kicker">03 / Why Perkins</p>
+          <h2 class="section-title" id="why-title">Built to get it moving.</h2>
+        </div>
+        <ul class="why-grid">
+          <li class="why-item reveal">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+            <h3>Less Clutter, More Space</h3>
+            <p>Make room for the things that matter.</p>
+          </li>
+          <li class="why-item reveal">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 15.5l2 2 4-4"/></svg>
+            <h3>Straightforward Scheduling</h3>
+            <p>Tell us what you need removed in a couple of minutes, right from your phone.</p>
+          </li>
+          <li class="why-item reveal">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>
+            <h3>A Get-It-Done Attitude</h3>
+            <p>Practical, hardworking service focused on getting the job moving.</p>
+          </li>
+          <li class="why-item reveal">
+            <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>
+            <h3>Local to Jacksonville</h3>
+            <p>A business focused on helping people in the Jacksonville area.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ HOW IT WORKS ============ -->
+    <section class="section how" id="how-it-works" aria-labelledby="how-title">
+      <div class="container">
+        <div class="section-head reveal">
+          <p class="kicker">04 / How It Works</p>
+          <h2 class="section-title" id="how-title">Three steps to a clear space.</h2>
+        </div>
+        <ol class="steps reveal">
+          <li class="step">
+            <span class="step-num" aria-hidden="true">01</span>
+            <h3>Tell Us What Needs to Go</h3>
+            <p>Describe the items you want removed.</p>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">02</span>
+            <h3>Schedule Your Pickup</h3>
+            <p>Share your contact details, location, and preferred time.</p>
+          </li>
+          <li class="step">
+            <span class="step-num" aria-hidden="true">03</span>
+            <h3>Clear Your Space</h3>
+            <p>Coordinate the removal details with the team.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ============ SCHEDULE SERVICE / CONTACT ============ -->
+    <section class="section schedule" id="contact" aria-labelledby="schedule-title">
+      <div class="schedule-glow" aria-hidden="true"></div>
+      <div class="container schedule-grid">
+        <div class="schedule-intro reveal">
+          <p class="kicker">05 / Schedule</p>
+          <h2 class="section-title schedule-title" id="schedule-title">Ready to get that stuff gone?</h2>
+          <p class="section-lede">Tell us what you need hauled away, and let's get your space back.</p>
+          <a class="btn btn-primary btn-lg schedule-jump" href="#schedule" data-schedule>Schedule a Pickup</a>
+
+          <ul class="schedule-notes">
+            <li>This form sends a scheduling <strong>request</strong>. Your pickup is confirmed once the team follows up with you.</li>
+            <li>Photos help, but a clear description of the items works too.</li>
+          </ul>
+
+          <!-- Shown only when contact details are set in js/app.js (CONFIG.contact) -->
+          <div class="contact-direct" data-contact-block hidden>
+            <p class="contact-label">Prefer to reach out directly?</p>
+            <a class="contact-link" data-contact="phone" hidden></a>
+            <a class="contact-link" data-contact="email" hidden></a>
+          </div>
+        </div>
+
+        <div class="form-shell reveal" id="schedule" tabindex="-1">
+          <form class="schedule-form" id="schedule-form" novalidate>
+            <div class="form-head">
+              <h3>Pickup request</h3>
+              <p>Fields marked <span class="req" aria-hidden="true">*</span><span class="sr-only">with an asterisk</span> are required.</p>
+            </div>
+
+            <div class="field">
+              <label for="f-name">Full name <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-err">
+              <p class="field-error" id="f-name-err"></p>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="f-phone">Phone number <span class="req" aria-hidden="true">*</span></label>
+                <input id="f-phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="(904) 555-0123" required aria-describedby="f-phone-err">
+                <p class="field-error" id="f-phone-err"></p>
+              </div>
+              <div class="field">
+                <label for="f-email">Email address <span class="req" aria-hidden="true">*</span></label>
+                <input id="f-email" name="email" type="email" inputmode="email" autocomplete="email" required aria-describedby="f-email-err">
+                <p class="field-error" id="f-email-err"></p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="f-address">Pickup address <span class="req" aria-hidden="true">*</span></label>
+              <input id="f-address" name="address" type="text" autocomplete="street-address" placeholder="Street address, Jacksonville area" required aria-describedby="f-address-hint f-address-err">
+              <p class="field-hint" id="f-address-hint">Jacksonville-area pickups.</p>
+              <p class="field-error" id="f-address-err"></p>
+            </div>
+
+            <div class="field">
+              <label for="f-service">Type of service <span class="req" aria-hidden="true">*</span></label>
+              <div class="select-wrap">
+                <select id="f-service" name="service" required aria-describedby="f-service-err">
+                  <option value="">Choose a service</option>
+                  <!-- Options are generated from the Services section -->
+                </select>
+              </div>
+              <p class="field-error" id="f-service-err"></p>
+            </div>
+
+            <div class="field">
+              <label for="f-items">What needs to go? <span class="req" aria-hidden="true">*</span></label>
+              <textarea id="f-items" name="items" rows="4" placeholder="e.g. old sectional couch, two mattresses, a few boxes in the garage" required aria-describedby="f-items-err"></textarea>
+              <p class="field-error" id="f-items-err"></p>
+            </div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="f-date">Preferred pickup date <span class="req" aria-hidden="true">*</span></label>
+                <input id="f-date" name="date" type="date" required aria-describedby="f-date-err">
+                <p class="field-error" id="f-date-err"></p>
+              </div>
+              <div class="field">
+                <label for="f-time">Preferred time <span class="req" aria-hidden="true">*</span></label>
+                <div class="select-wrap">
+                  <select id="f-time" name="time" required aria-describedby="f-time-err">
+                    <option value="">Choose a time</option>
+                    <option>Morning</option>
+                    <option>Midday</option>
+                    <option>Afternoon</option>
+                    <option>Evening</option>
+                    <option>Flexible</option>
+                  </select>
+                </div>
+                <p class="field-error" id="f-time-err"></p>
+              </div>
+            </div>
+
+            <!-- Photo upload: hidden unless CONFIG.allowPhotoUpload is true AND the
+                 configured endpoint accepts multipart file uploads. -->
+            <div class="field" data-photo-field hidden>
+              <label for="f-photos">Photos <span class="optional">(optional)</span></label>
+              <input id="f-photos" name="photos" type="file" accept="image/jpeg,image/png,image/webp,image/heic" multiple aria-describedby="f-photos-hint f-photos-err">
+              <p class="field-hint" id="f-photos-hint"></p>
+              <p class="field-error" id="f-photos-err"></p>
+            </div>
+
+            <!-- Honeypot field for basic spam filtering. Real visitors never see it. -->
+            <div class="hp" aria-hidden="true">
+              <label for="f-company">Company</label>
+              <input id="f-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+            </div>
+
+            <button class="btn btn-primary btn-lg btn-block" type="submit">
+              <span class="btn-label">Send Pickup Request</span>
+              <svg class="btn-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+
+            <div class="form-status" role="status" aria-live="polite" hidden></div>
+
+            <noscript><p class="form-status is-warn">JavaScript is needed to send this form. Please enable it, or check back for direct contact details.</p></noscript>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a class="logo logo-footer brand-logo" href="#home" aria-label="Perkins Haul and Hustle, back to top">
+          <img src="images/main-logo.svg" alt="" width="1536" height="1024" loading="lazy">
+        </a>
+        <p class="footer-name">Perkins Haul and Hustle</p>
+        <p class="footer-slogan">Anytime. Anywhere.</p>
+        <p class="footer-area" data-config="serviceArea">Jacksonville, Florida</p>
+      </div>
+
+      <nav class="footer-nav" aria-label="Footer">
+        <p class="footer-heading">Navigate</p>
+        <ul>
+          <li><a href="#home">Home</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <div class="footer-cta">
+        <p class="footer-heading">Got stuff to go?</p>
+        <p>Jacksonville junk removal. Less clutter. More space.</p>
+        <a class="btn btn-primary" href="#schedule" data-schedule>Schedule a Pickup</a>
+        <div class="footer-contact" data-contact-block hidden>
+          <a data-contact="phone" hidden></a>
+          <a data-contact="email" hidden></a>
+        </div>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; <span data-year>2026</span> Perkins Haul and Hustle. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- Sticky mobile scheduling bar -->
+  <div class="mobile-cta">
+    <a class="btn btn-primary btn-block" href="#schedule" data-schedule>Schedule a Pickup</a>
+  </div>
+
+  <script src="js/app.js" defer></script>
+</body>
+</html>
