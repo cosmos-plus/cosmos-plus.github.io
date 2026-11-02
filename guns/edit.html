@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Add firearm · Firearms Collection</title>
+  <meta name="theme-color" content="#0a0b0a">
+  <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="manage">
+  <header id="site-header"></header>
+
+  <main class="container">
+    <div class="form-wrap">
+      <a href="manage.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        Back to manage
+      </a>
+      <p id="form-eyebrow" class="eyebrow" style="margin-top:16px">New entry</p>
+      <h1 id="form-title" class="page-title">Add a firearm</h1>
+
+      <div id="form-error" class="notice notice-danger" role="alert" hidden></div>
+
+      <form id="firearm-form" class="form" novalidate>
+        <!-- Photo -->
+        <section class="form-section">
+          <h2>Photo</h2>
+          <p>A side-profile product shot on a plain white background looks best.</p>
+          <div id="dropzone" class="dropzone"></div>
+          <input id="image-input" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" class="sr-only" tabindex="-1">
+          <span id="error-image" class="error-text" hidden></span>
+          <div class="row-actions">
+            <button id="choose-photo" type="button" class="btn btn-ghost"></button>
+            <button id="remove-photo" type="button" class="btn btn-danger" hidden></button>
+          </div>
+        </section>
+
+        <!-- Basic info -->
+        <section class="form-section">
+          <h2>Basic information</h2>
+          <p>Fields marked <span class="req">*</span> are required.</p>
+          <div class="form-fields two">
+            <label>
+              <span class="label"><span>Manufacturer<span class="req">*</span></span></span>
+              <input class="field" name="manufacturer" list="manufacturer-list" placeholder="e.g. GLOCK" maxlength="80" required>
+              <span class="error-text" data-error="manufacturer" hidden></span>
+            </label>
+            <label>
+              <span class="label"><span>Model<span class="req">*</span></span></span>
+              <input class="field" name="model" placeholder="e.g. G19 Gen5" maxlength="120" required>
+              <span class="error-text" data-error="model" hidden></span>
+            </label>
+            <label class="span-2">
+              <span class="label"><span>Full name</span><small>Optional</small></span>
+              <input class="field" name="name" placeholder="Leave blank to use Manufacturer + Model" maxlength="160">
+            </label>
+            <label>
+              <span class="label"><span>Model number / SKU</span><small>Optional</small></span>
+              <input class="field" name="modelNumber" placeholder="e.g. 28601" maxlength="60">
+            </label>
+            <label>
+              <span class="label"><span>Category<span class="req">*</span></span></span>
+              <select class="field" name="category" id="category-select"></select>
+            </label>
+          </div>
+          <datalist id="manufacturer-list"></datalist>
+        </section>
+
+        <!-- Specs -->
+        <section class="form-section">
+          <h2>Specifications</h2>
+          <p>Leave anything you can't verify blank. It will show as "Not specified".</p>
+          <div class="form-fields two">
+            <label><span class="label">Caliber</span><input class="field" name="caliber" list="caliber-list" placeholder="e.g. 9x19 mm" maxlength="80"></label>
+            <label><span class="label">Action type</span><input class="field" name="action" placeholder="e.g. Semi-automatic" maxlength="120"></label>
+            <label><span class="label">Barrel length</span><input class="field" name="barrelLength" placeholder="e.g. 4.02 in (102 mm)" maxlength="80"></label>
+            <label><span class="label">Overall length</span><input class="field" name="overallLength" placeholder="e.g. 7.28 in (185 mm)" maxlength="80"></label>
+            <label><span class="label">Weight</span><input class="field" name="weight" placeholder="e.g. 21.52 oz without magazine" maxlength="120"></label>
+            <label><span class="label">Magazine capacity</span><input class="field" name="capacity" placeholder="e.g. 15 rounds" maxlength="120"></label>
+            <label class="span-2"><span class="label">Finish</span><input class="field" name="finish" placeholder="e.g. nDLC" maxlength="120"></label>
+          </div>
+          <datalist id="caliber-list"></datalist>
+        </section>
+
+        <!-- Extra specs -->
+        <section class="form-section">
+          <h2>Additional specifications</h2>
+          <p>Anything else worth recording: twist rate, sights, height, trigger pull, UPC, MSRP, and so on.</p>
+          <div id="spec-rows" class="spec-rows"></div>
+          <div class="row-actions">
+            <button id="add-spec" type="button" class="btn btn-ghost"></button>
+          </div>
+        </section>
+
+        <!-- Description -->
+        <section class="form-section">
+          <h2>Description &amp; source</h2>
+          <div class="form-fields">
+            <label>
+              <span class="label">Product description</span>
+              <textarea class="field" name="description" rows="6" maxlength="5000" placeholder="A short overview of the firearm and its notable features."></textarea>
+            </label>
+            <label>
+              <span class="label">Official product URL</span>
+              <input class="field" name="productUrl" type="url" inputmode="url" placeholder="https://…" maxlength="500">
+              <span class="error-text" data-error="productUrl" hidden></span>
+            </label>
+          </div>
+        </section>
+
+        <div class="form-footer">
+          <a href="manage.html" class="btn btn-ghost">Cancel</a>
+          <button id="save-btn" type="submit" class="btn btn-primary">Add to collection</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/edit.js"></script>
+</body>
+</html>

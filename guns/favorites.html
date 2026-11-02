@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Favorites · Firearms Collection</title>
+  <meta name="theme-color" content="#0a0b0a">
+  <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="favorites">
+  <header id="site-header"></header>
+
+  <main class="container">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Bookmarked</p>
+        <h1 class="page-title">Favorites</h1>
+        <p class="muted" style="margin-top:8px;max-width:36rem">Firearms you've bookmarked with the heart icon. Favorites are saved in this browser.</p>
+      </div>
+    </div>
+
+    <section class="section" style="padding-top:32px">
+      <div class="toolbar">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="search" class="field" type="search" placeholder="Search by name, manufacturer, or model…" aria-label="Search firearms" autocomplete="off">
+          <button id="search-clear" class="search-clear" type="button" aria-label="Clear search" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+        <div class="filters">
+          <label><span class="sr-only">Manufacturer</span><select id="filter-manufacturer" class="field"></select></label>
+          <label><span class="sr-only">Caliber</span><select id="filter-caliber" class="field"></select></label>
+          <label><span class="sr-only">Sort by</span>
+            <select id="sort" class="field">
+              <option value="newest">Sort: Recently added</option>
+              <option value="manufacturer">Sort: Manufacturer (A–Z)</option>
+              <option value="model">Sort: Model (A–Z)</option>
+            </select>
+          </label>
+          <button id="filter-favorites" type="button" class="btn btn-ghost" aria-pressed="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3Z"/></svg>
+            <span>Favorites</span>
+          </button>
+        </div>
+        <div id="category-chips" class="chips" role="group" aria-label="Filter by category"></div>
+      </div>
+
+      <div class="results-bar" aria-live="polite">
+        <p id="results-count">Loading…</p>
+        <button id="clear-filters" type="button" class="link-btn" hidden>Clear filters</button>
+      </div>
+
+      <div id="grid" class="grid"></div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/collection.js"></script>
+</body>
+</html>

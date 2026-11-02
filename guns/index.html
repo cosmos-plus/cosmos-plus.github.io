@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Firearms Collection</title>
+  <meta name="description" content="A Personal Firearms Reference & Specification Library">
+  <meta name="theme-color" content="#0a0b0a">
+  <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="home">
+  <header id="site-header"></header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-inner">
+        <p class="eyebrow fade-up">Reference &amp; Specification Library</p>
+        <h1 class="fade-up" style="animation-delay:60ms">Firearms<br><span>Collection</span></h1>
+        <p class="hero-sub fade-up" style="animation-delay:120ms">A Personal Firearms Reference &amp; Specification Library</p>
+        <dl class="stats fade-up" style="animation-delay:180ms">
+          <div class="stat"><dd id="stat-total">–</dd><dt>Firearms in collection</dt></div>
+          <div class="stat"><dd id="stat-makers">–</dd><dt>Manufacturers</dt></div>
+          <div class="stat"><dd id="stat-categories">–</dd><dt>Categories</dt></div>
+        </dl>
+      </div>
+    </section>
+
+    <section id="recent" class="container section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Latest</p>
+          <h2 class="section-title">Recently Added</h2>
+        </div>
+      </div>
+      <div id="recent-grid" class="recent-grid">
+        <div class="skeleton" style="aspect-ratio:4/3"></div>
+        <div class="skeleton" style="aspect-ratio:4/3"></div>
+      </div>
+    </section>
+
+    <section id="collection" class="container section">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Catalog</p>
+          <h2 class="section-title">The Collection <span id="collection-count" class="count-badge">–</span></h2>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="search" class="field" type="search" placeholder="Search by name, manufacturer, or model…" aria-label="Search firearms" autocomplete="off">
+          <button id="search-clear" class="search-clear" type="button" aria-label="Clear search" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+          </button>
+        </div>
+        <div class="filters">
+          <label><span class="sr-only">Manufacturer</span><select id="filter-manufacturer" class="field"></select></label>
+          <label><span class="sr-only">Caliber</span><select id="filter-caliber" class="field"></select></label>
+          <label><span class="sr-only">Sort by</span>
+            <select id="sort" class="field">
+              <option value="newest">Sort: Recently added</option>
+              <option value="manufacturer">Sort: Manufacturer (A–Z)</option>
+              <option value="model">Sort: Model (A–Z)</option>
+            </select>
+          </label>
+          <button id="filter-favorites" type="button" class="btn btn-ghost" aria-pressed="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.5-4.6-7.5-10.3A4.2 4.2 0 0 1 12 7.6a4.2 4.2 0 0 1 7.5 2.6c0 5.7-7.5 10.3-7.5 10.3Z"/></svg>
+            <span>Favorites</span>
+          </button>
+        </div>
+        <div id="category-chips" class="chips" role="group" aria-label="Filter by category"></div>
+      </div>
+
+      <div class="results-bar" aria-live="polite">
+        <p id="results-count">Loading…</p>
+        <button id="clear-filters" type="button" class="link-btn" hidden>Clear filters</button>
+      </div>
+
+      <div id="grid" class="grid">
+        <div class="skeleton" style="height:380px"></div>
+        <div class="skeleton" style="height:380px"></div>
+        <div class="skeleton" style="height:380px"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/collection.js"></script>
+</body>
+</html>

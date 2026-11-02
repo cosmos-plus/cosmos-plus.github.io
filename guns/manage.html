@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage · Firearms Collection</title>
+  <meta name="theme-color" content="#0a0b0a">
+  <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body data-page="manage">
+  <header id="site-header"></header>
+
+  <main class="container">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Manage</p>
+        <h1 class="page-title">Manage Collection</h1>
+        <p id="manage-summary" class="muted" style="margin-top:8px">Loading…</p>
+      </div>
+      <div class="head-actions">
+        <a href="edit.html" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+          Add firearm
+        </a>
+      </div>
+    </div>
+
+    <div id="storage-warning" class="notice notice-danger" hidden>
+      This browser is blocking site storage (private browsing or strict privacy settings), so changes won't be saved after you close the page.
+    </div>
+    <div id="saved-notice" class="notice" hidden></div>
+
+    <ul id="admin-list" class="admin-list">
+      <li class="admin-item"><div class="skeleton" style="height:70px;width:100%"></div></li>
+    </ul>
+
+    <section id="backup" class="form-section data-tools">
+      <h2>Backup &amp; restore</h2>
+      <p>
+        Your collection is saved in this browser. Export a backup file to keep a safe copy or to move the collection
+        to another browser or device, then use Import there.
+      </p>
+      <div class="row-actions">
+        <button id="export-btn" type="button" class="btn btn-ghost"></button>
+        <button id="import-btn" type="button" class="btn btn-ghost"></button>
+        <button id="reset-btn" type="button" class="btn btn-danger"></button>
+        <input id="import-file" type="file" accept="application/json,.json" class="sr-only" tabindex="-1">
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/manage.js"></script>
+</body>
+</html>
