@@ -18,7 +18,7 @@
       firearms = await store.all();
     } catch (err) {
       console.error(err);
-      $("#admin-list").innerHTML = `<li class="admin-item text-danger">The collection couldn't be loaded. Please refresh the page.</li>`;
+      $("#admin-list").innerHTML = `<li class="admin-item text-danger">The wishlist couldn't be loaded. Please refresh the page.</li>`;
       return;
     }
     $("#storage-warning").hidden = store.persistent;
@@ -33,7 +33,7 @@
         <li class="admin-item" style="display:block">
           <div class="empty" style="margin:0;border:0">
             <h3>No firearms yet</h3>
-            <p>Add your first firearm to start the collection.</p>
+            <p>Add your first firearm to start the wishlist.</p>
             <a href="edit.html" class="btn btn-primary">Add firearm</a>
           </div>
         </li>`;
@@ -68,7 +68,7 @@
     const btn = e.target.closest("[data-delete]");
     if (!btn) return;
     const f = firearms.find((x) => x.id === btn.dataset.delete);
-    if (!f || !confirm(`Delete "${f.name}" from the collection?\n\nThis cannot be undone (unless you have a backup).`)) return;
+    if (!f || !confirm(`Delete "${f.name}" from the wishlist?\n\nThis cannot be undone (unless you have a backup).`)) return;
     btn.disabled = true;
     try {
       await store.remove(f.id);
@@ -168,23 +168,24 @@
       const records = list.map(normalize).filter(Boolean);
       if (!records.length) throw new Error("No valid firearms in file");
       const skipped = list.length - records.length;
-      if (!confirm(`Replace the current collection (${firearms.length}) with ${records.length} firearm${records.length === 1 ? "" : "s"} from "${file.name}"?`)) return;
+      if (!confirm(`Replace the current wishlist (${firearms.length}) with ${records.length} firearm${records.length === 1 ? "" : "s"} from "${file.name}"?`)) return;
       await store.replaceAll(records);
       await load();
       toast(`Imported ${records.length} firearm${records.length === 1 ? "" : "s"}${skipped ? ` (${skipped} skipped)` : ""}.`);
     } catch (err) {
       console.error(err);
-      toast("That file isn't a valid Firearms Collection backup.");
+      toast("That file isn't a valid wishlist backup.");
     }
   });
 
   // ---------- Reset ----------
   $("#reset-btn").addEventListener("click", async () => {
-    if (!confirm("Reset to the starting catalog of 5 firearms?\n\nAll firearms you added or edited will be removed. Export a backup first if you want to keep them.")) return;
+    const count = (window.SEED_FIREARMS || []).length;
+    if (!confirm(`Reset to the starting catalog of ${count} firearms?\n\nAll firearms you added or edited will be removed. Export a backup first if you want to keep them.`)) return;
     try {
       await store.resetToDefaults();
       await load();
-      toast("Collection reset to the starting catalog.");
+      toast("Wishlist reset to the starting catalog.");
     } catch (err) {
       console.error(err);
       toast("Reset failed. Please try again.");

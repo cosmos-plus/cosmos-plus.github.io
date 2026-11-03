@@ -16,17 +16,17 @@
   }
 
   if (!f) {
-    document.title = "Not found · Firearms Collection";
+    document.title = "Not found · Welch's Firearm Wishlist";
     root.innerHTML = `
       <div class="empty" style="margin-top:64px">
         <h3>Firearm not found</h3>
         <p>It may have been deleted, or the link is incorrect.</p>
-        <a class="btn btn-primary" href="index.html#collection">Back to collection</a>
+        <a class="btn btn-primary" href="index.html#collection">Back to wishlist</a>
       </div>`;
     return;
   }
 
-  document.title = `${f.name} · Firearms Collection`;
+  document.title = `${f.name} · Welch's Firearm Wishlist`;
 
   const value = (v) => (v ? esc(v) : `<span class="not-specified">${NOT_SPECIFIED}</span>`);
   const rows = (list) =>
@@ -64,7 +64,7 @@
 
   root.innerHTML = `
     <div class="detail-top">
-      <a href="index.html#collection" class="btn btn-ghost">${icons.arrowLeft} Back to collection</a>
+      <a href="index.html#collection" class="btn btn-ghost">${icons.arrowLeft} Back to wishlist</a>
       <a href="edit.html?id=${encodeURIComponent(f.id)}" class="btn btn-ghost">${icons.edit} Edit</a>
     </div>
 

@@ -43,6 +43,66 @@
     }));
   }
 
+  /**
+   * Adds entries from js/data.js that this browser hasn't seen yet, so firearms
+   * appended to data.js show up without resetting. Each entry is added only once,
+   * so a firearm you delete stays deleted.
+   */
+  async function syncSeed(db) {
+    const meta = db.transaction(META).objectStore(META);
+    let seen = await request(meta.get("seedIds"));
+    if (!Array.isArray(seen)) {
+      // Older versions only stored the date the starting catalog was loaded.
+      const seededAt = await request(meta.get("seeded"));
+      seen = seededAt ? seedRecords().filter((r) => r.createdAt <= seededAt).map((r) => r.id) : [];
+    }
+    const fresh = seedRecords().filter((r) => !seen.includes(r.id));
+    if (!fresh.length) return;
+
+    const existing = new Set(await request(db.transaction(STORE).objectStore(STORE).getAllKeys()));
+    const tx = db.transaction([STORE, META], "readwrite");
+    fresh.filter((r) => !existing.has(r.id)).forEach((r) => tx.objectStore(STORE).put(r));
+    tx.objectStore(META).put([...seen, ...fresh.map((r) => r.id)], "seedIds");
+    await txDone(tx);
+  }
+
+  const MARKS = /\s*[®™]/g;
+  const stripMarks = (v) => (typeof v === "string" ? v.replace(MARKS, "") : v);
+
+  /** Removes ® and ™ from saved firearms, including ones loaded before data.js dropped them. */
+  async function stripTrademarks(db) {
+    const records = await request(db.transaction(STORE).objectStore(STORE).getAll());
+    const fields = ["name", "manufacturer", "model", "caliber", "action", "finish", "capacity", "description", "extraSpecs"];
+    const snapshot = (r) => JSON.stringify(fields.map((k) => r[k]));
+    const changed = records.filter((r) => {
+      const before = snapshot(r);
+      fields.slice(0, -1).forEach((k) => (r[k] = stripMarks(r[k])));
+      if (Array.isArray(r.extraSpecs)) r.extraSpecs = r.extraSpecs.map((s) => ({ ...s, label: stripMarks(s.label), value: stripMarks(s.value) }));
+      return snapshot(r) !== before;
+    });
+    if (!changed.length) return;
+    const tx = db.transaction(STORE, "readwrite");
+    changed.forEach((r) => tx.objectStore(STORE).put(r));
+    await txDone(tx);
+  }
+
+  /** Copies a price from js/data.js onto saved catalog firearms that don't have one yet. */
+  async function backfillPrices(db) {
+    const isPrice = (s) => /msrp|price|retail/i.test(s?.label || "");
+    const seeds = new Map(seedRecords().map((r) => [r.id, r]));
+    const records = await request(db.transaction(STORE).objectStore(STORE).getAll());
+    const changed = records.filter((r) => {
+      const seedPrice = (seeds.get(r.id)?.extraSpecs || []).find(isPrice);
+      if (!seedPrice || (r.extraSpecs || []).some(isPrice)) return false;
+      r.extraSpecs = [...(r.extraSpecs || []), { ...seedPrice }];
+      return true;
+    });
+    if (!changed.length) return;
+    const tx = db.transaction(STORE, "readwrite");
+    changed.forEach((r) => tx.objectStore(STORE).put(r));
+    await txDone(tx);
+  }
+
   function openDb() {
     if (dbPromise) return dbPromise;
     dbPromise = new Promise((resolve, reject) => {
@@ -53,19 +113,18 @@
         if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE, { keyPath: "id" });
         if (!db.objectStoreNames.contains(META)) db.createObjectStore(META);
       };
-      req.onsuccess = () => resolve(req.result);
+      req.onsuccess = () => {
+        // Let other tabs upgrade or delete the database instead of hanging.
+        req.result.onversionchange = () => req.result.close();
+        resolve(req.result);
+      };
       req.onerror = () => reject(req.error);
       req.onblocked = () => reject(new Error("Database is blocked by another tab"));
     })
       .then(async (db) => {
-        // Seed once. Deleting every firearm later will not bring the seed back.
-        const seeded = await request(db.transaction(META).objectStore(META).get("seeded"));
-        if (!seeded) {
-          const tx = db.transaction([STORE, META], "readwrite");
-          seedRecords().forEach((r) => tx.objectStore(STORE).put(r));
-          tx.objectStore(META).put(new Date().toISOString(), "seeded");
-          await txDone(tx);
-        }
+        await syncSeed(db);
+        await stripTrademarks(db);
+        await backfillPrices(db);
         return db;
       })
       .catch((err) => {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Favorites · Firearms Collection</title>
+  <title>Favorites · Welch's Firearm Wishlist</title>
   <meta name="theme-color" content="#0a0b0a">
   <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
   <link rel="stylesheet" href="css/styles.css">
@@ -34,6 +34,8 @@
           <label><span class="sr-only">Caliber</span><select id="filter-caliber" class="field"></select></label>
           <label><span class="sr-only">Sort by</span>
             <select id="sort" class="field">
+              <option value="type">Sort: Type, cheapest first</option>
+              <option value="price">Sort: Price (low–high)</option>
               <option value="newest">Sort: Recently added</option>
               <option value="manufacturer">Sort: Manufacturer (A–Z)</option>
               <option value="model">Sort: Model (A–Z)</option>

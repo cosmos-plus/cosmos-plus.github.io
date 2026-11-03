@@ -21,7 +21,7 @@
       .replace(/[̀-ͯ]/g, "")
       .toLowerCase()
       .replace(/&/g, " and ")
-      .replace(/[®™]/g, "")
+      .replace(/[™]/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
       .slice(0, 80) || "firearm";
@@ -32,6 +32,41 @@
   };
 
   const detailUrl = (f) => "firearm.html?id=" + encodeURIComponent(f.id);
+
+  /** True for an extra spec that holds a price (MSRP, "Price (…)", "Suggested retail"). */
+  const isPriceSpec = (s) => /msrp|price|retail/i.test(s?.label || "") && /\d/.test(s?.value || "");
+
+  /** The firearm's price in dollars, taken from its first price spec, or null. */
+  function priceOf(f) {
+    const spec = (f.extraSpecs || []).find(isPriceSpec);
+    const n = spec && parseFloat(spec.value.replace(/[^0-9.]/g, ""));
+    return n > 0 ? n : null;
+  }
+
+  const formatPrice = (n) =>
+    n == null ? NOT_SPECIFIED : "$" + n.toLocaleString("en-US", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+
+  // Different spellings of the same cartridge, so "9x19 mm" and "9mm" filter together.
+  const CALIBER_GROUPS = [
+    [/\.?380\b|9\s*mm\s*(short|kurz)/i, ".380 ACP"],
+    [/\b9\s*(x\s*19|mm)\b|9mm|luger|parabellum/i, "9mm"],
+    [/\.?40\s*s\s*&?\s*w/i, ".40 S&W"],
+    [/\.?45\s*acp/i, ".45 ACP"],
+    [/5\.56|\.223/i, "5.56 NATO / .223"],
+    [/7\.62\s*(x\s*51|nato)|\.308/i, ".308 Win / 7.62 NATO"],
+    [/\.?30-30/i, ".30-30 Win"],
+    [/\.?22\s*(lr|long rifle)/i, ".22 LR"],
+  ];
+
+  /** A caliber's common name: "9x19 mm" → "9mm", "12-Gauge (2-3/4\", 3\")" → "12 Gauge". */
+  function caliberGroup(caliber) {
+    const c = String(caliber || "").trim();
+    if (!c) return "";
+    const gauge = c.match(/(\d+)\s*-?\s*(ga\b|gauge)/i);
+    if (gauge) return `${gauge[1]} Gauge`;
+    const hit = CALIBER_GROUPS.find(([re]) => re.test(c));
+    return hit ? hit[1] : c;
+  }
 
   // ---------- Icons ----------
   const svg = (body, extra = "") =>
@@ -140,8 +175,8 @@
           <p class="eyebrow">${esc(f.manufacturer)}</p>
           <h3 class="card-title"><a href="${url}">${esc(f.model)}</a></h3>
           <dl class="card-specs">
-            <div><dt>Caliber</dt><dd>${esc(f.caliber || NOT_SPECIFIED)}</dd></div>
-            <div><dt>Category</dt><dd>${esc(f.category)}</dd></div>
+            <div><dt>Caliber</dt><dd>${esc(caliberGroup(f.caliber) || NOT_SPECIFIED)}</dd></div>
+            <div><dt>Price</dt><dd class="card-price">${esc(formatPrice(priceOf(f)))}</dd></div>
           </dl>
           <div class="card-cta-wrap"><span class="card-cta">View Details ${icons.arrowRight}</span></div>
         </div>
@@ -164,7 +199,7 @@
 
   // ---------- Header & footer ----------
   const NAV = [
-    { href: "index.html", label: "Collection", page: "home" },
+    { href: "index.html", label: "Wishlist", page: "home" },
     { href: "favorites.html", label: "Favorites", page: "favorites" },
     { href: "manage.html", label: "Manage", page: "manage" },
   ];
@@ -179,9 +214,9 @@
       header.className = "site-header";
       header.innerHTML = `
         <div class="container header-inner">
-          <a href="index.html" class="brand" aria-label="Firearms Collection home">
+          <a href="index.html" class="brand" aria-label="Welch's Firearm Wishlist home">
             <span class="brand-mark">${icons.crosshair}</span>
-            <span class="brand-name">Firearms<span> Collection</span></span>
+            <span class="brand-name">Welch's <span><span class="brand-long">Firearm </span>Wishlist</span></span>
           </a>
           <nav class="nav" aria-label="Main">
             ${links("nav-link")}
@@ -206,27 +241,26 @@
       footer.innerHTML = `
         <div class="container footer-grid">
           <div>
-            <a href="index.html" class="brand"><span class="brand-mark">${icons.crosshair}</span><span class="brand-name">Firearms Collection</span></a>
-            <p class="footer-about">A personal firearms reference &amp; specification library. Specifications are sourced from manufacturer pages where available and may change without notice.</p>
+            <a href="index.html" class="brand"><span class="brand-mark">${icons.crosshair}</span><span class="brand-name">Welch's Firearm Wishlist</span></a>
+            <p class="footer-about">Welch's firearm wishlist, with specs for every pick. Specifications are sourced from manufacturer pages where available and may change without notice.</p>
           </div>
           <div>
             <h2 class="eyebrow">Browse</h2>
             <ul class="footer-links">
-              <li><a href="index.html#collection">Full collection</a></li>
-              <li><a href="index.html#recent">Recently added</a></li>
+              <li><a href="index.html#collection">Full wishlist</a></li>
               <li><a href="favorites.html">Favorites</a></li>
             </ul>
           </div>
           <div>
             <h2 class="eyebrow">Manage</h2>
             <ul class="footer-links">
-              <li><a href="manage.html">Manage collection</a></li>
+              <li><a href="manage.html">Manage wishlist</a></li>
               <li><a href="edit.html">Add a firearm</a></li>
               <li><a href="manage.html#backup">Backup &amp; restore</a></li>
             </ul>
           </div>
         </div>
-        <div class="footer-bottom"><p class="container">© ${new Date().getFullYear()} Firearms Collection · For personal reference only. Always follow applicable laws and safe handling practices.</p></div>`;
+        <div class="footer-bottom"><p class="container">© ${new Date().getFullYear()} Welch's Firearm Wishlist · For personal reference only. Always follow applicable laws and safe handling practices.</p></div>`;
     }
 
     document.querySelectorAll("[data-theme-toggle]").forEach((btn) => {
@@ -237,5 +271,5 @@
 
   renderChrome();
 
-  Object.assign(FC, { NOT_SPECIFIED, esc, safeUrl, slugify, formatDate, detailUrl, icons, favorites, syncFavoriteButtons, photo, card, toast });
+  Object.assign(FC, { NOT_SPECIFIED, esc, safeUrl, slugify, formatDate, detailUrl, isPriceSpec, priceOf, formatPrice, caliberGroup, icons, favorites, syncFavoriteButtons, photo, card, toast });
 })();

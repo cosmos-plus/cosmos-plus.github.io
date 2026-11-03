@@ -27,7 +27,7 @@
     existing = editId ? all.find((f) => f.id === editId) || null : null;
   } catch (err) {
     console.error(err);
-    showFormError("The collection couldn't be loaded. Please refresh the page.");
+    showFormError("The wishlist couldn't be loaded. Please refresh the page.");
   }
 
   if (editId && !existing) {
@@ -49,7 +49,7 @@
   $("#category-select").innerHTML = categories.map((c) => `<option>${esc(c)}</option>`).join("");
 
   if (existing) {
-    document.title = `Edit ${existing.name} · Firearms Collection`;
+    document.title = `Edit ${existing.name} · Welch's Firearm Wishlist`;
     $("#form-eyebrow").textContent = existing.manufacturer;
     $("#form-title").textContent = `Edit ${existing.model}`;
     $("#save-btn").textContent = "Save changes";
@@ -269,7 +269,7 @@
       const full = err && err.name === "QuotaExceededError";
       showFormError(full ? "Browser storage is full. Try a smaller photo, or delete unused firearms." : "Something went wrong while saving. Please try again.");
       btn.disabled = false;
-      btn.textContent = existing ? "Save changes" : "Add to collection";
+      btn.textContent = existing ? "Save changes" : "Add to wishlist";
       toast("Not saved");
     }
   });

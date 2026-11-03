@@ -1,18 +1,24 @@
 /*
- * Home & Favorites pages: stats, recently added, search, filters, sorting and grid.
+ * Home & Favorites pages: stats, search, filters, sorting and grid.
  */
 (async function () {
   "use strict";
 
-  const { store, esc, card, photo, formatDate, detailUrl, favorites, syncFavoriteButtons, NOT_SPECIFIED } = window.FC;
+  const { store, esc, card, priceOf, caliberGroup, favorites, syncFavoriteButtons, NOT_SPECIFIED } = window.FC;
   const $ = (sel) => document.querySelector(sel);
+
+  // Default order: handguns first, then shotguns, then rifles (ARs).
+  const TYPE_ORDER = ["Pistol", "Revolver", "Shotgun", "Carbine", "Rifle"];
+  const typeRank = (c) => (TYPE_ORDER.includes(c) ? TYPE_ORDER.indexOf(c) : TYPE_ORDER.length);
+  // Firearms without a price sort after priced ones.
+  const byPrice = (a, b) => (priceOf(a) ?? Infinity) - (priceOf(b) ?? Infinity);
 
   const state = {
     query: "",
     category: "All",
     manufacturer: "",
     caliber: "",
-    sort: "newest",
+    sort: "type",
     favoritesOnly: document.body.dataset.page === "favorites",
   };
 
@@ -21,7 +27,7 @@
     firearms = await store.all();
   } catch (err) {
     console.error(err);
-    $("#grid").innerHTML = `<div class="empty"><h3>Couldn't load the collection</h3><p>Please refresh the page to try again.</p></div>`;
+    $("#grid").innerHTML = `<div class="empty"><h3>Couldn't load the wishlist</h3><p>Please refresh the page to try again.</p></div>`;
     return;
   }
 
@@ -38,32 +44,12 @@
   setText("#stat-categories", unique(firearms.map((f) => f.category)).length);
   setText("#collection-count", firearms.length);
 
-  // ---------- Recently added ----------
-  const recentEl = $("#recent-grid");
-  if (recentEl) {
-    const recent = firearms.slice(0, 4);
-    $("#recent").hidden = recent.length === 0;
-    recentEl.innerHTML = recent
-      .map(
-        (f) => `
-        <a class="recent-card" href="${detailUrl(f)}">
-          ${photo(f)}
-          <div class="recent-body">
-            <p class="recent-maker truncate">${esc(f.manufacturer)}</p>
-            <p class="recent-model truncate">${esc(f.model)}</p>
-            <p class="recent-date">Added ${esc(formatDate(f.createdAt))}</p>
-          </div>
-        </a>`,
-      )
-      .join("");
-  }
-
   // ---------- Filter controls ----------
   const fillSelect = (el, placeholder, values) => {
     el.innerHTML = `<option value="">${placeholder}</option>` + values.map((v) => `<option>${esc(v)}</option>`).join("");
   };
   fillSelect($("#filter-manufacturer"), "All manufacturers", unique(firearms.map((f) => f.manufacturer)));
-  fillSelect($("#filter-caliber"), "All calibers", unique(firearms.map((f) => f.caliber)));
+  fillSelect($("#filter-caliber"), "All calibers", unique(firearms.map((f) => caliberGroup(f.caliber))));
 
   function renderChips() {
     const categories = ["All", ...unique(firearms.map((f) => f.category))];
@@ -94,12 +80,14 @@
         if (state.favoritesOnly && !favIds.includes(f.id)) return false;
         if (state.category !== "All" && f.category !== state.category) return false;
         if (state.manufacturer && f.manufacturer !== state.manufacturer) return false;
-        if (state.caliber && f.caliber !== state.caliber) return false;
+        if (state.caliber && caliberGroup(f.caliber) !== state.caliber) return false;
         if (!terms.length) return true;
-        const haystack = [f.name, f.manufacturer, f.model, f.modelNumber, f.caliber, f.category].join(" ").toLowerCase();
+        const haystack = [f.name, f.manufacturer, f.model, f.modelNumber, f.caliber, caliberGroup(f.caliber), f.category].join(" ").toLowerCase();
         return terms.every((t) => haystack.includes(t));
       })
       .sort((a, b) => {
+        if (state.sort === "type") return typeRank(a.category) - typeRank(b.category) || byPrice(a, b) || compare(a.model, b.model);
+        if (state.sort === "price") return byPrice(a, b) || compare(a.model, b.model);
         if (state.sort === "manufacturer") return compare(a.manufacturer, b.manufacturer) || compare(a.model, b.model);
         if (state.sort === "model") return compare(a.model, b.model) || compare(a.manufacturer, b.manufacturer);
         return compare(b.createdAt, a.createdAt);
@@ -126,9 +114,9 @@
     const noFavs = state.favoritesOnly && favorites.ids().length === 0;
     const [title, text, action] =
       firearms.length === 0
-        ? ["The collection is empty", "Add your first firearm from the Manage page.", `<a class="btn btn-primary" href="edit.html">Add a firearm</a>`]
+        ? ["The wishlist is empty", "Add your first firearm from the Manage page.", `<a class="btn btn-primary" href="edit.html">Add a firearm</a>`]
         : noFavs
-          ? ["No favorites yet", "Tap the heart on any firearm to bookmark it here.", `<a class="btn btn-ghost" href="index.html#collection">Browse the collection</a>`]
+          ? ["No favorites yet", "Tap the heart on any firearm to bookmark it here.", `<a class="btn btn-ghost" href="index.html#collection">Browse the wishlist</a>`]
           : ["No firearms match your filters", "Try a different search term or clear the filters.", `<button type="button" class="btn btn-ghost" data-reset>Show all firearms</button>`];
     $("#grid").className = "";
     $("#grid").innerHTML = `<div class="empty"><h3>${title}</h3><p>${text}</p>${action}</div>`;

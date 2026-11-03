@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Firearms Collection</title>
-  <meta name="description" content="A Personal Firearms Reference & Specification Library">
+  <title>Welch's Firearm Wishlist</title>
+  <meta name="description" content="Welch's firearm wishlist, with specs for every pick">
   <meta name="theme-color" content="#0a0b0a">
   <script>try{if(localStorage.getItem("theme")==="light")document.documentElement.dataset.theme="light"}catch(e){}</script>
   <link rel="stylesheet" href="css/styles.css">
@@ -15,27 +15,14 @@
   <main>
     <section class="hero">
       <div class="container hero-inner">
-        <p class="eyebrow fade-up">Reference &amp; Specification Library</p>
-        <h1 class="fade-up" style="animation-delay:60ms">Firearms<br><span>Collection</span></h1>
-        <p class="hero-sub fade-up" style="animation-delay:120ms">A Personal Firearms Reference &amp; Specification Library</p>
+        <p class="eyebrow fade-up">Wishlist &amp; Specs</p>
+        <h1 class="fade-up" style="animation-delay:60ms">Welch's<br><span>Firearm Wishlist</span></h1>
+        <p class="hero-sub fade-up" style="animation-delay:120ms">The firearms on Welch's wishlist, with specs for every one</p>
         <dl class="stats fade-up" style="animation-delay:180ms">
-          <div class="stat"><dd id="stat-total">–</dd><dt>Firearms in collection</dt></div>
+          <div class="stat"><dd id="stat-total">–</dd><dt>Firearms on the wishlist</dt></div>
           <div class="stat"><dd id="stat-makers">–</dd><dt>Manufacturers</dt></div>
           <div class="stat"><dd id="stat-categories">–</dd><dt>Categories</dt></div>
         </dl>
-      </div>
-    </section>
-
-    <section id="recent" class="container section">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Latest</p>
-          <h2 class="section-title">Recently Added</h2>
-        </div>
-      </div>
-      <div id="recent-grid" class="recent-grid">
-        <div class="skeleton" style="aspect-ratio:4/3"></div>
-        <div class="skeleton" style="aspect-ratio:4/3"></div>
       </div>
     </section>
 
@@ -43,7 +30,7 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">Catalog</p>
-          <h2 class="section-title">The Collection <span id="collection-count" class="count-badge">–</span></h2>
+          <h2 class="section-title">The Wishlist <span id="collection-count" class="count-badge">–</span></h2>
         </div>
       </div>
 
@@ -60,6 +47,8 @@
           <label><span class="sr-only">Caliber</span><select id="filter-caliber" class="field"></select></label>
           <label><span class="sr-only">Sort by</span>
             <select id="sort" class="field">
+              <option value="type">Sort: Type, cheapest first</option>
+              <option value="price">Sort: Price (low–high)</option>
               <option value="newest">Sort: Recently added</option>
               <option value="manufacturer">Sort: Manufacturer (A–Z)</option>
               <option value="model">Sort: Model (A–Z)</option>
